@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.svg" alt="SalonShop Logo" width="300" height="100">
+  <img src="assets/logo.png" alt="SalonShop Logo" width="300">
   
   # SalonShop - Complete Salon Management System
   
