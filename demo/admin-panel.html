@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalonShop - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #D32F2F;
+            color: white;
+            padding: 0;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 12px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #D32F2F;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #FFC107;
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #212121;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #D32F2F;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #D32F2F;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #D32F2F;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #757575;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            padding: 24px 24px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 24px;
+        }
+
+        .recent-bookings {
+            padding: 24px;
+        }
+
+        .booking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+
+        .booking-info h4 {
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .booking-info p {
+            color: #757575;
+            font-size: 14px;
+        }
+
+        .booking-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+
+        .status-pending {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+
+        .quick-actions {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .action-button {
+            padding: 16px 24px;
+            background: #D32F2F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .action-button:hover {
+            background: #B71C1C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(211, 47, 47, 0.3);
+        }
+
+        .action-button.secondary {
+            background: #FFC107;
+            color: #212121;
+        }
+
+        .action-button.secondary:hover {
+            background: #FF8F00;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 0;
+            }
+            
+            .nav-item {
+                flex-shrink: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo">S</div>
+                <h1 class="app-title">SalonShop</h1>
+                <p class="app-subtitle">Admin Panel</p>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">📅</span>
+                            Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">✂️</span>
+                            Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">👥</span>
+                            Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">👤</span>
+                            Customers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">💰</span>
+                            Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <span class="nav-icon">⚙️</span>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div>
+                        <div style="font-weight: 600;">Admin User</div>
+                        <div style="font-size: 12px; color: #757575;">admin@salonshop.com</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Today's Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$2,450</div>
+                        <div class="stat-label">Today's Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Active Customers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Staff Members</div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Bookings</h2>
+                    </div>
+                    <div class="recent-bookings">
+                        <div class="booking-item">
+                            <div class="booking-info">
+                                <h4>Sarah Johnson - Haircut & Color</h4>
+                                <p>Today, 2:00 PM with Emma Thompson</p>
+                            </div>
+                            <span class="booking-status status-confirmed">Confirmed</span>
+                        </div>
+                        <div class="booking-item">
+                            <div class="booking-info">
+                                <h4>Mike Davis - Beard Trim</h4>
+                                <p>Today, 3:30 PM with Alex Rodriguez</p>
+                            </div>
+                            <span class="booking-status status-pending">Pending</span>
+                        </div>
+                        <div class="booking-item">
+                            <div class="booking-info">
+                                <h4>Lisa Chen - Manicure</h4>
+                                <p>Today, 4:00 PM with Maria Garcia</p>
+                            </div>
+                            <span class="booking-status status-confirmed">Confirmed</span>
+                        </div>
+                        <div class="booking-item">
+                            <div class="booking-info">
+                                <h4>Robert Wilson - Full Service</h4>
+                                <p>Tomorrow, 10:00 AM with Emma Thompson</p>
+                            </div>
+                            <span class="booking-status status-confirmed">Confirmed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-button">New Booking</button>
+                        <button class="action-button secondary">Add Service</button>
+                        <button class="action-button">Manage Staff</button>
+                        <button class="action-button secondary">View Reports</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple navigation interaction
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Update page title
+                const linkText = this.textContent.trim();
+                document.querySelector('.page-title').textContent = linkText;
+                
+                // Simple content update based on navigation
+                updateContent(linkText);
+            });
+        });
+
+        function updateContent(section) {
+            const contentArea = document.querySelector('.content-area');
+            
+            switch(section) {
+                case 'Bookings':
+                    contentArea.innerHTML = `
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">45</div>
+                                <div class="stat-label">Total Bookings Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Pending Confirmations</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">33</div>
+                                <div class="stat-label">Confirmed Bookings</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">2</div>
+                                <div class="stat-label">Cancellations</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Booking Management</h2>
+                            </div>
+                            <div style="padding: 24px; text-align: center;">
+                                <h3>Booking Calendar would be here</h3>
+                                <p style="color: #757575; margin-top: 8px;">Full calendar view with drag-and-drop booking management</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'Services':
+                    contentArea.innerHTML = `
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Active Services</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">6</div>
+                                <div class="stat-label">Categories</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">$85</div>
+                                <div class="stat-label">Average Price</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">4.8</div>
+                                <div class="stat-label">Average Rating</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Service Categories</h2>
+                            </div>
+                            <div style="padding: 24px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                    <div style="text-align: center; padding: 20px; border: 2px solid #f0f0f0; border-radius: 8px;">
+                                        <div style="font-size: 48px; margin-bottom: 12px;">✂️</div>
+                                        <h4>Hair Services</h4>
+                                        <p style="color: #757575; font-size: 14px;">8 services</p>
+                                    </div>
+                                    <div style="text-align: center; padding: 20px; border: 2px solid #f0f0f0; border-radius: 8px;">
+                                        <div style="font-size: 48px; margin-bottom: 12px;">💅</div>
+                                        <h4>Nail Services</h4>
+                                        <p style="color: #757575; font-size: 14px;">6 services</p>
+                                    </div>
+                                    <div style="text-align: center; padding: 20px; border: 2px solid #f0f0f0; border-radius: 8px;">
+                                        <div style="font-size: 48px; margin-bottom: 12px;">🧴</div>
+                                        <h4>Facial Services</h4>
+                                        <p style="color: #757575; font-size: 14px;">5 services</p>
+                                    </div>
+                                    <div style="text-align: center; padding: 20px; border: 2px solid #f0f0f0; border-radius: 8px;">
+                                        <div style="font-size: 48px; margin-bottom: 12px;">💆</div>
+                                        <h4>Massage</h4>
+                                        <p style="color: #757575; font-size: 14px;">3 services</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'Staff':
+                    contentArea.innerHTML = `
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">Total Staff</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">6</div>
+                                <div class="stat-label">Working Today</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">Avg. Rating</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">$1,250</div>
+                                <div class="stat-label">Total Earnings Today</div>
+                            </div>
+                        </div>
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <h2 class="section-title">Staff Members</h2>
+                            </div>
+                            <div style="padding: 24px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                                    <div style="padding: 16px; border: 1px solid #f0f0f0; border-radius: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 50px; height: 50px; border-radius: 50%; background: #D32F2F; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">ET</div>
+                                            <div>
+                                                <h4>Emma Thompson</h4>
+                                                <p style="color: #757575; font-size: 14px;">Senior Stylist</p>
+                                                <p style="color: #4CAF50; font-size: 12px;">● Available</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="padding: 16px; border: 1px solid #f0f0f0; border-radius: 8px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 50px; height: 50px; border-radius: 50%; background: #D32F2F; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">AR</div>
+                                            <div>
+                                                <h4>Alex Rodriguez</h4>
+                                                <p style="color: #757575; font-size: 14px;">Barber</p>
+                                                <p style="color: #FF9800; font-size: 12px;">● Busy</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                default:
+                    // Reset to dashboard
+                    location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

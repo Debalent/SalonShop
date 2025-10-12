@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalonShop - Mobile App Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #D32F2F;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .app-header {
+            background: #D32F2F;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .app-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 16px 8px;
+            text-align: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 600;
+            color: #757575;
+        }
+
+        .tab-item.active {
+            color: #D32F2F;
+            border-bottom: 2px solid #D32F2F;
+        }
+
+        .screen-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            height: calc(100% - 180px);
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #D32F2F;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .service-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #D32F2F;
+        }
+
+        .service-description {
+            color: #757575;
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .service-duration {
+            color: #FFC107;
+            font-size: 12px;
+            font-weight: 600;
+            background: #FFF8E1;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .book-button {
+            width: 100%;
+            padding: 12px;
+            background: #D32F2F;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .book-button:hover {
+            background: #B71C1C;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .booking-date {
+            font-size: 16px;
+            font-weight: 600;
+            color: #D32F2F;
+            margin-bottom: 8px;
+        }
+
+        .booking-service {
+            font-size: 18px;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .booking-staff {
+            color: #757575;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .booking-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+
+        .status-pending {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #D32F2F;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 16px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            color: #757575;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #D32F2F;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #757575;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bottom-navigation {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding-bottom: 20px;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #D32F2F;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .phone-container {
+                width: 100%;
+                max-width: 375px;
+                height: 100vh;
+                border-radius: 0;
+                padding: 0;
+            }
+            
+            .phone-screen {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="phone-screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>SalonShop</span>
+                <span>🔋100%</span>
+            </div>
+
+            <!-- App Header -->
+            <div class="app-header">
+                <h1 class="app-title">SalonShop</h1>
+                <p class="app-subtitle">Your Beauty Destination</p>
+            </div>
+
+            <!-- Services Screen -->
+            <div id="services-screen" class="screen-content">
+                <div class="service-card">
+                    <div class="service-header">
+                        <div>
+                            <h3 class="service-title">Premium Haircut & Style</h3>
+                            <div class="service-duration">⏱️ 60 min</div>
+                        </div>
+                        <div class="service-price">$85</div>
+                    </div>
+                    <p class="service-description">Professional haircut with wash, style, and finishing. Includes consultation with our expert stylists.</p>
+                    <button class="book-button" onclick="bookService('Premium Haircut & Style', '$85')">Book Now</button>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-header">
+                        <div>
+                            <h3 class="service-title">Hair Color & Highlights</h3>
+                            <div class="service-duration">⏱️ 120 min</div>
+                        </div>
+                        <div class="service-price">$150</div>
+                    </div>
+                    <p class="service-description">Full color treatment or highlights with premium products. Color consultation included.</p>
+                    <button class="book-button" onclick="bookService('Hair Color & Highlights', '$150')">Book Now</button>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-header">
+                        <div>
+                            <h3 class="service-title">Manicure & Pedicure</h3>
+                            <div class="service-duration">⏱️ 45 min</div>
+                        </div>
+                        <div class="service-price">$65</div>
+                    </div>
+                    <p class="service-description">Complete nail care with shaping, cuticle treatment, and polish application.</p>
+                    <button class="book-button" onclick="bookService('Manicure & Pedicure', '$65')">Book Now</button>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-header">
+                        <div>
+                            <h3 class="service-title">Facial Treatment</h3>
+                            <div class="service-duration">⏱️ 75 min</div>
+                        </div>
+                        <div class="service-price">$120</div>
+                    </div>
+                    <p class="service-description">Deep cleansing facial with mask, exfoliation, and moisturizing treatment.</p>
+                    <button class="book-button" onclick="bookService('Facial Treatment', '$120')">Book Now</button>
+                </div>
+            </div>
+
+            <!-- Bookings Screen -->
+            <div id="bookings-screen" class="screen-content hidden">
+                <div class="booking-card">
+                    <div class="booking-date">Tomorrow, Dec 15 at 2:00 PM</div>
+                    <div class="booking-service">Premium Haircut & Style</div>
+                    <div class="booking-staff">with Emma Thompson</div>
+                    <span class="booking-status status-confirmed">Confirmed</span>
+                </div>
+
+                <div class="booking-card">
+                    <div class="booking-date">Dec 18 at 10:30 AM</div>
+                    <div class="booking-service">Hair Color & Highlights</div>
+                    <div class="booking-staff">with Sarah Wilson</div>
+                    <span class="booking-status status-pending">Pending</span>
+                </div>
+
+                <div class="booking-card">
+                    <div class="booking-date">Dec 22 at 3:15 PM</div>
+                    <div class="booking-service">Facial Treatment</div>
+                    <div class="booking-staff">with Maria Garcia</div>
+                    <span class="booking-status status-confirmed">Confirmed</span>
+                </div>
+            </div>
+
+            <!-- Profile Screen -->
+            <div id="profile-screen" class="screen-content hidden">
+                <div class="profile-section">
+                    <div class="profile-avatar">JD</div>
+                    <h2 class="profile-name">Jane Doe</h2>
+                    <p class="profile-email">jane.doe@email.com</p>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Appointments</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">$850</div>
+                            <div class="stat-label">Total Spent</div>
+                        </div>
+                    </div>
+                    
+                    <button class="book-button">Edit Profile</button>
+                </div>
+
+                <div class="service-card">
+                    <h3 class="service-title">Loyalty Points</h3>
+                    <p class="service-description">You have 340 points! Redeem 500 points for a free service.</p>
+                    <div style="margin-top: 12px;">
+                        <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div style="background: #D32F2F; height: 100%; width: 68%; border-radius: 4px;"></div>
+                        </div>
+                        <p style="margin-top: 8px; font-size: 12px; color: #757575;">160 points to next reward</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-navigation">
+                <div class="nav-item active" onclick="showScreen('services')">
+                    <div class="nav-icon">✂️</div>
+                    <div class="nav-label">Services</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('bookings')">
+                    <div class="nav-icon">📅</div>
+                    <div class="nav-label">Bookings</div>
+                </div>
+                <div class="nav-item" onclick="showScreen('profile')">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-label">Profile</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen-content').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenName + '-screen').classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+        }
+
+        function bookService(serviceName, price) {
+            alert(`Booking ${serviceName} for ${price}!\n\nThis would normally open the booking calendar to select date and time.`);
+        }
+
+        // Add some interactivity to make it feel more realistic
+        document.querySelectorAll('.book-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>

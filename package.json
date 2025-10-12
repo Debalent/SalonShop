@@ -1,0 +1,53 @@
+{
+  "name": "salonshop",
+  "version": "1.0.0",
+  "description": "Comprehensive salon management app with mobile and web interfaces",
+  "main": "backend/server.js",
+  "private": true,
+  "workspaces": [
+    "apps/mobile",
+    "apps/admin-panel",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run backend:dev\" \"npm run mobile:dev\" \"npm run admin:dev\"",
+    "backend:dev": "cd backend && npm run dev",
+    "mobile:dev": "cd apps/mobile && npm start",
+    "admin:dev": "cd apps/admin-panel && npm start",
+    "build": "npm run backend:build && npm run mobile:build && npm run admin:build",
+    "backend:build": "cd backend && npm run build",
+    "mobile:build": "cd apps/mobile && npm run build",
+    "admin:build": "cd apps/admin-panel && npm run build",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "seed": "node scripts/seedData.js",
+    "deploy": "bash scripts/deploy.sh",
+    "start": "npm run backend:start",
+    "backend:start": "cd backend && npm start"
+  },
+  "keywords": [
+    "salon",
+    "beauty",
+    "booking",
+    "management",
+    "react-native",
+    "react",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "SalonShop Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "jest": "^29.7.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/react-native": "^12.4.2",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}
