@@ -2,9 +2,56 @@
 
 A comprehensive, full-stack salon management application with mobile customer booking app, web admin dashboard, and robust backend API. Built with React Native, React, and Node.js.
 
+## 👋 Hi Laura! Quick Start Guide for You
+
+Welcome to your SalonShop application! Here's how to access and view the UI demos I've created for you:
+
+### 🚀 **Easy Demo Access (No Installation Required)**
+
+1. **Download the Project:**
+   - Go to [https://github.com/Debalent/SalonShop](https://github.com/Debalent/SalonShop)
+   - Click the green **"Code"** button
+   - Select **"Download ZIP"**
+   - Extract the ZIP file to your computer
+
+2. **View the UI Demos:**
+   - Open the extracted folder
+   - Navigate to the `demo` folder
+   - Double-click on **`admin-panel.html`** to see the business dashboard
+   - Double-click on **`mobile-app.html`** to see the customer mobile app
+
+### 🎯 **What You'll See:**
+
+**Admin Panel Demo** (`admin-panel.html`):
+
+- Professional business dashboard with your salon's branding
+- Click sidebar items (Dashboard, Bookings, Services, Staff, etc.) to navigate
+- See real-time statistics, booking management, and business analytics
+- Red-themed design matching your brand
+
+**Mobile App Demo** (`mobile-app.html`):
+
+- Customer-facing mobile app interface
+- Use bottom navigation (Services, Bookings, Profile) to switch screens
+- Try the "Book Now" buttons to see booking interactions
+- View customer profiles and loyalty features
+
+### 💡 **Tips for Laura:**
+
+- Both demos are fully interactive - click around to explore!
+- The design uses your chosen red theme and professional styling
+- No technical setup needed - just open the HTML files in any web browser
+- These are visual prototypes showing exactly how your salon app will look and work
+
+### 📞 **Need Help?**
+
+If you have any questions about the features or want to request changes, just let me know!
+
+---
+
 ## 🏗️ Project Structure
 
-```
+```text
 SalonShop/
 ├── mobile/                     # React Native mobile app
 │   ├── src/

@@ -316,6 +316,30 @@
             display: none;
         }
 
+        .loyalty-progress {
+            margin-top: 12px;
+        }
+
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #D32F2F;
+            height: 100%;
+            width: 68%;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #757575;
+        }
+
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -450,11 +474,11 @@
                 <div class="service-card">
                     <h3 class="service-title">Loyalty Points</h3>
                     <p class="service-description">You have 340 points! Redeem 500 points for a free service.</p>
-                    <div style="margin-top: 12px;">
-                        <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div style="background: #D32F2F; height: 100%; width: 68%; border-radius: 4px;"></div>
+                    <div class="loyalty-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
                         </div>
-                        <p style="margin-top: 8px; font-size: 12px; color: #757575;">160 points to next reward</p>
+                        <p class="progress-text">160 points to next reward</p>
                     </div>
                 </div>
             </div>
