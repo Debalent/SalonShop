@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "SalonShop",
+    "slug": "salonshop",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#D32F2F"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.salonshop.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#D32F2F"
+      },
+      "package": "com.salonshop.app"
+    },
+    "web": {
+      "favicon": "./assets/logo.png",
+      "name": "SalonShop - Your Beauty Destination",
+      "shortName": "SalonShop",
+      "lang": "en",
+      "scope": "/",
+      "themeColor": "#D32F2F",
+      "backgroundColor": "#ffffff",
+      "display": "standalone",
+      "orientation": "portrait-primary",
+      "bundler": "metro"
+    },
+    "platforms": ["ios", "android", "web"],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
