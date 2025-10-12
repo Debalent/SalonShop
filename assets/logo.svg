@@ -1,35 +1,39 @@
-<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="salonShopGradient" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" style="stop-color:#D32F2F;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#B71C1C;stop-opacity:1" />
     </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+    </filter>
   </defs>
   
-  <!-- Background Circle -->
-  <circle cx="100" cy="100" r="95" fill="url(#logoGradient)" stroke="#fff" stroke-width="4"/>
+  <!-- Background -->
+  <rect width="300" height="100" rx="20" fill="url(#salonShopGradient)" filter="url(#shadow)"/>
   
-  <!-- Salon Chair -->
-  <path d="M60 140 L60 120 Q60 110 70 110 L130 110 Q140 110 140 120 L140 140 Q140 150 130 150 L70 150 Q60 150 60 140 Z" fill="#fff"/>
-  
-  <!-- Scissors -->
-  <g transform="translate(85,70) rotate(-30)">
-    <ellipse cx="0" cy="-8" rx="3" ry="8" fill="#fff"/>
-    <ellipse cx="0" cy="8" rx="3" ry="8" fill="#fff"/>
-    <line x1="0" y1="-16" x2="0" y2="16" stroke="#fff" stroke-width="2"/>
-    <circle cx="0" cy="0" r="3" fill="#D32F2F"/>
+  <!-- Decorative S -->
+  <g transform="translate(30,50)">
+    <circle cx="0" cy="0" r="25" fill="white" opacity="0.9"/>
+    <text x="0" y="8" font-family="Georgia, serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#D32F2F">S</text>
   </g>
   
-  <!-- Comb -->
-  <g transform="translate(115,70) rotate(30)">
-    <rect x="-2" y="-12" width="4" height="24" fill="#fff" rx="2"/>
-    <line x1="-4" y1="-8" x2="4" y2="-8" stroke="#fff" stroke-width="1"/>
-    <line x1="-4" y1="-4" x2="4" y2="-4" stroke="#fff" stroke-width="1"/>
-    <line x1="-4" y1="0" x2="4" y2="0" stroke="#fff" stroke-width="1"/>
-    <line x1="-4" y1="4" x2="4" y2="4" stroke="#fff" stroke-width="1"/>
-    <line x1="-4" y1="8" x2="4" y2="8" stroke="#fff" stroke-width="1"/>
+  <!-- Main Text -->
+  <text x="90" y="42" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="white">Salon</text>
+  <text x="90" y="68" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="white">Shop</text>
+  
+  <!-- Decorative Elements -->
+  <line x1="200" y1="25" x2="270" y2="25" stroke="white" stroke-width="2" opacity="0.7"/>
+  <line x1="200" y1="75" x2="270" y2="75" stroke="white" stroke-width="2" opacity="0.7"/>
+  
+  <!-- Small Icons -->
+  <g transform="translate(235,35)">
+    <circle cx="0" cy="0" r="8" fill="white" opacity="0.8"/>
+    <text x="0" y="3" font-family="Arial" font-size="10" text-anchor="middle" fill="#D32F2F">✂</text>
   </g>
   
-  <!-- Text -->
-  <text x="100" y="180" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#D32F2F">SalonShop</text>
+  <g transform="translate(255,55)">
+    <circle cx="0" cy="0" r="6" fill="white" opacity="0.6"/>
+    <text x="0" y="2" font-family="Arial" font-size="8" text-anchor="middle" fill="#D32F2F">💄</text>
+  </g>
 </svg>
