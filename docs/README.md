@@ -176,6 +176,7 @@ SalonShop/
 ## 🎯 Features
 
 ### 📱 Mobile App (React Native)
+
 - **Customer Features:**
   - Service browsing and booking
   - Staff selection and scheduling
@@ -192,6 +193,7 @@ SalonShop/
   - Earnings tracking
 
 ### 💻 Admin Panel (React Web)
+
 - **Business Management:**
   - Real-time dashboard with analytics
   - Service and staff management
@@ -202,6 +204,7 @@ SalonShop/
   - Review and rating system
 
 ### 🔧 Backend API (Node.js/Express)
+
 - **Core Services:**
   - RESTful API with comprehensive endpoints
   - JWT authentication and authorization
@@ -215,6 +218,7 @@ SalonShop/
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **Mobile:** React Native + Expo
 - **Web:** React + Material-UI
 - **State Management:** React Context + Hooks
@@ -223,6 +227,7 @@ SalonShop/
 - **Internationalization:** react-i18next
 
 ### Backend
+
 - **Runtime:** Node.js
 - **Framework:** Express.js
 - **Database:** MongoDB with Mongoose ODM
@@ -234,6 +239,7 @@ SalonShop/
 - **Payments:** Stripe
 
 ### DevOps & Tools
+
 - **Version Control:** Git
 - **Package Manager:** npm/yarn
 - **Code Quality:** ESLint, Prettier
@@ -244,6 +250,7 @@ SalonShop/
 ## 📊 Database Schema
 
 ### Core Models
+
 - **User:** Customer, staff, and admin accounts
 - **Booking:** Appointment scheduling and management
 - **Service:** Beauty services and pricing
@@ -254,7 +261,8 @@ SalonShop/
 - **DispersalRule:** Automated payment distribution
 
 ### Key Relationships
-```
+
+```text
 User (1:N) Booking
 Staff (1:N) Booking
 Service (1:N) Booking
@@ -266,12 +274,14 @@ Staff (1:N) Tip
 ## 🔐 Authentication & Authorization
 
 ### Role-Based Access Control
+
 - **Customer:** Book services, view history, manage profile
 - **Staff:** Manage schedule, view appointments, update status
 - **Admin:** Full business management access
 - **Super Admin:** System-wide administration
 
 ### Security Features
+
 - JWT token-based authentication
 - Password hashing with bcrypt
 - Rate limiting and request throttling
@@ -282,6 +292,7 @@ Staff (1:N) Tip
 ## 🌍 Internationalization
 
 Support for 5 languages:
+
 - **English (en)** - Default
 - **Spanish (es)** - Español
 - **Korean (ko)** - 한국어
@@ -289,6 +300,7 @@ Support for 5 languages:
 - **Vietnamese (vi)** - Tiếng Việt
 
 ### Implementation
+
 - react-i18next for translation management
 - Automatic language detection
 - RTL language support ready
@@ -298,6 +310,7 @@ Support for 5 languages:
 ## 🎨 Design System
 
 ### Theme (Hideaway Pizza Inspired)
+
 - **Primary:** Deep Red (#D32F2F)
 - **Secondary:** Amber Gold (#FFC107)
 - **Background:** Light Gray (#FAFAFA)
@@ -305,6 +318,7 @@ Support for 5 languages:
 - **Spacing:** Consistent 8px grid system
 
 ### Accessibility
+
 - WCAG 2.1 AA compliance
 - Screen reader compatibility
 - Keyboard navigation support
@@ -315,7 +329,8 @@ Support for 5 languages:
 ## 📱 Mobile App Architecture
 
 ### Navigation Structure
-```
+
+```text
 Root Navigator
 ├── Auth Stack (Login, Register, Forgot Password)
 └── Main Tabs
@@ -326,6 +341,7 @@ Root Navigator
 ```
 
 ### Key Components
+
 - **Logo Component:** Reusable branding element
 - **Theme Provider:** Dark/light mode support
 - **Auth Context:** Authentication state management
@@ -334,6 +350,7 @@ Root Navigator
 ## 💻 Admin Panel Architecture
 
 ### Dashboard Modules
+
 - **Analytics:** Revenue, bookings, customer insights
 - **Bookings:** Appointment management and scheduling
 - **Services:** Service catalog management
@@ -343,6 +360,7 @@ Root Navigator
 - **Settings:** Business configuration
 
 ### Features
+
 - Responsive design for all screen sizes
 - Real-time data updates
 - Export functionality for reports
@@ -352,7 +370,8 @@ Root Navigator
 ## 🔄 API Architecture
 
 ### RESTful Endpoints
-```
+
+```http
 Authentication
 POST /api/auth/login
 POST /api/auth/register
@@ -385,6 +404,7 @@ GET    /api/analytics/bookings
 ```
 
 ### Middleware Stack
+
 - **Authentication:** JWT verification
 - **Authorization:** Role-based access control
 - **Validation:** Request data validation
@@ -395,12 +415,14 @@ GET    /api/analytics/bookings
 ## 🧪 Testing Strategy
 
 ### Test Coverage
+
 - **Unit Tests:** Individual component/function testing
 - **Integration Tests:** API endpoint testing
 - **E2E Tests:** Complete user flow testing
 - **Performance Tests:** Load and stress testing
 
 ### Testing Tools
+
 - Jest for unit testing
 - React Testing Library for component testing
 - Supertest for API testing
@@ -409,6 +431,7 @@ GET    /api/analytics/bookings
 ## 🚀 Deployment
 
 ### Production Setup
+
 1. **Backend Deployment:**
    - Configure production environment variables
    - Set up MongoDB cluster
@@ -428,6 +451,7 @@ GET    /api/analytics/bookings
    - Set up analytics tracking
 
 ### Environment Variables
+
 ```bash
 # Backend
 NODE_ENV=production
@@ -447,6 +471,7 @@ REACT_APP_STRIPE_PUBLIC_KEY=pk_live_...
 ## 📈 Performance Optimization
 
 ### Frontend
+
 - Code splitting and lazy loading
 - Image optimization and lazy loading
 - Bundle size optimization
@@ -454,6 +479,7 @@ REACT_APP_STRIPE_PUBLIC_KEY=pk_live_...
 - Progressive Web App features
 
 ### Backend
+
 - Database indexing
 - Query optimization
 - Caching with Redis
@@ -565,4 +591,6 @@ See [ROADMAP.md](./ROADMAP.md) for planned features and improvements.
 
 ---
 
-**Built with ❤️ by the SalonShop Team**
+## 👥 SalonShop Team
+
+Built with ❤️ by the SalonShop development team.
