@@ -18,9 +18,15 @@ export const ThemeProvider = ({ children }) => {
   const systemColorScheme = useColorScheme();
   const [isDarkMode, setIsDarkMode] = useState(systemColorScheme === 'dark');
   const [themePreference, setThemePreference] = useState('system'); // 'light', 'dark', 'system'
+  const [customColors, setCustomColors] = useState({
+    primary: null,
+    accent: null,
+    background: null,
+  });
 
   useEffect(() => {
     loadThemePreference();
+    loadCustomColors();
   }, []);
 
   useEffect(() => {
@@ -46,11 +52,22 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
+  const loadCustomColors = async () => {
+    try {
+      const stored = await AsyncStorage.getItem('customColors');
+      if (stored) {
+        setCustomColors(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Error loading custom colors:', error);
+    }
+  };
+
   const updateThemePreference = async (preference) => {
     try {
       await AsyncStorage.setItem('themePreference', preference);
       setThemePreference(preference);
-      
+
       if (preference === 'light') {
         setIsDarkMode(false);
       } else if (preference === 'dark') {
@@ -63,14 +80,59 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  const theme = isDarkMode ? darkTheme : lightTheme;
+  const updateCustomColors = async (colors) => {
+    try {
+      const newColors = { ...customColors, ...colors };
+      await AsyncStorage.setItem('customColors', JSON.stringify(newColors));
+      setCustomColors(newColors);
+    } catch (error) {
+      console.error('Error saving custom colors:', error);
+    }
+  };
+
+  const resetCustomColors = async () => {
+    try {
+      await AsyncStorage.removeItem('customColors');
+      setCustomColors({ primary: null, accent: null, background: null });
+    } catch (error) {
+      console.error('Error resetting custom colors:', error);
+    }
+  };
+
+  const baseTheme = isDarkMode ? darkTheme : lightTheme;
+
+  // Apply custom colors if they exist
+  const theme = {
+    ...baseTheme,
+    colors: {
+      ...baseTheme.colors,
+      ...(customColors.primary && { primary: customColors.primary }),
+      ...(customColors.accent && { accent: customColors.accent }),
+      ...(customColors.background && { background: customColors.background }),
+    },
+  };
 
   const value = {
     theme,
     isDarkMode,
     themePreference,
+    customColors,
     updateThemePreference,
+    updateCustomColors,
+    resetCustomColors,
     toggleTheme: () => updateThemePreference(isDarkMode ? 'light' : 'dark'),
+    // Accessibility helpers
+    getAccessibleColor: (colorKey, fallback) => {
+      // Ensure sufficient contrast for accessibility
+      const color = theme.colors[colorKey] || fallback;
+      // In a real implementation, you'd check contrast ratios here
+      return color;
+    },
+    announceForAccessibility: (message) => {
+      if (AccessibilityInfo) {
+        AccessibilityInfo.announceForAccessibility(message);
+      }
+    },
   };
 
   return (

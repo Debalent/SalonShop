@@ -84,20 +84,161 @@ const userSchema = new mongoose.Schema({
     hireDate: Date,
     isActive: { type: Boolean, default: true },
     schedule: {
-      monday: { start: String, end: String, isWorking: Boolean },
-      tuesday: { start: String, end: String, isWorking: Boolean },
-      wednesday: { start: String, end: String, isWorking: Boolean },
-      thursday: { start: String, end: String, isWorking: Boolean },
-      friday: { start: String, end: String, isWorking: Boolean },
-      saturday: { start: String, end: String, isWorking: Boolean },
-      sunday: { start: String, end: String, isWorking: Boolean }
+      monday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: true },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      },
+      tuesday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: true },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      },
+      wednesday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: true },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      },
+      thursday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: true },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      },
+      friday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: true },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      },
+      saturday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: false },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      },
+      sunday: {
+        start: String,
+        end: String,
+        isWorking: { type: Boolean, default: false },
+        breaks: [{
+          start: String,
+          end: String,
+          description: String
+        }],
+        availability: {
+          type: String,
+          enum: ['available', 'limited', 'unavailable'],
+          default: 'available'
+        }
+      }
+    },
+    // Advanced scheduling features
+    schedulingPreferences: {
+      maxDailyAppointments: { type: Number, default: 8 },
+      preferredBreakDuration: { type: Number, default: 15 }, // minutes
+      bufferBetweenAppointments: { type: Number, default: 15 }, // minutes
+      advanceBookingLimit: { type: Number, default: 60 }, // days
+      blackoutDates: [{
+        startDate: Date,
+        endDate: Date,
+        reason: String,
+        recurring: { type: Boolean, default: false }
+      }],
+      timeOffRequests: [{
+        startDate: Date,
+        endDate: Date,
+        reason: String,
+        status: {
+          type: String,
+          enum: ['pending', 'approved', 'rejected'],
+          default: 'pending'
+        },
+        approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        approvedAt: Date
+      }]
     },
     bio: String,
     portfolio: [{
       imageUrl: String,
       description: String,
-      serviceType: String
-    }]
+      serviceType: String,
+      beforeAfterImages: {
+        before: String,
+        after: String
+      },
+      clientFeedback: {
+        rating: Number,
+        comment: String
+      },
+      isPublic: { type: Boolean, default: true },
+      likes: { type: Number, default: 0 },
+      tags: [String],
+      dateCreated: { type: Date, default: Date.now }
+    }],
+    socialStats: {
+      totalLikes: { type: Number, default: 0 },
+      totalViews: { type: Number, default: 0 },
+      averageRating: { type: Number, default: 0 },
+      reviewCount: { type: Number, default: 0 }
+    }
   },
   // Customer-specific fields
   customerInfo: {
@@ -108,7 +249,27 @@ const userSchema = new mongoose.Schema({
     allergies: [String],
     skinType: String,
     hairType: String,
-    notes: String
+    notes: String,
+    socialFeatures: {
+      beforeAfterPhotos: [{
+        beforeImage: String,
+        afterImage: String,
+        serviceType: String,
+        date: Date,
+        staff: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        isPublic: { type: Boolean, default: false },
+        likes: { type: Number, default: 0 },
+        comments: [{
+          user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+          text: String,
+          date: Date
+        }]
+      }],
+      favoriteStylists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+      stylePreferences: [String],
+      socialHandle: String,
+      profileVisibility: { type: String, enum: ['public', 'friends', 'private'], default: 'private' }
+    }
   },
   isEmailVerified: { type: Boolean, default: false },
   isPhoneVerified: { type: Boolean, default: false },
@@ -162,6 +323,146 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 // Instance method to get full name
 userSchema.methods.getFullName = function() {
   return `${this.firstName} ${this.lastName}`;
+};
+
+// Instance method to check staff availability for a specific day and time
+userSchema.methods.isAvailableOn = function(date, startTime, endTime) {
+  if (!this.staffInfo || !this.staffInfo.schedule) {
+    return false;
+  }
+
+  const dayOfWeek = date.toLowerCase();
+  const daySchedule = this.staffInfo.schedule[dayOfWeek];
+
+  if (!daySchedule || !daySchedule.isWorking || daySchedule.availability === 'unavailable') {
+    return false;
+  }
+
+  // Check if the requested time falls within working hours
+  const workStart = daySchedule.start;
+  const workEnd = daySchedule.end;
+
+  if (startTime < workStart || endTime > workEnd) {
+    return false;
+  }
+
+  // Check for breaks
+  if (daySchedule.breaks) {
+    for (const breakPeriod of daySchedule.breaks) {
+      if ((startTime < breakPeriod.end && endTime > breakPeriod.start)) {
+        return false; // Overlaps with break
+      }
+    }
+  }
+
+  // Check blackout dates
+  if (this.staffInfo.schedulingPreferences?.blackoutDates) {
+    for (const blackout of this.staffInfo.schedulingPreferences.blackoutDates) {
+      if (date >= blackout.startDate && date <= blackout.endDate) {
+        return false;
+      }
+    }
+  }
+
+  // Check time off requests
+  if (this.staffInfo.schedulingPreferences?.timeOffRequests) {
+    for (const timeOff of this.staffInfo.schedulingPreferences.timeOffRequests) {
+      if (timeOff.status === 'approved' && date >= timeOff.startDate && date <= timeOff.endDate) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+// Instance method to get available time slots for a specific date
+userSchema.methods.getAvailableSlots = function(date, serviceDuration = 60, bufferTime = 15) {
+  if (!this.isAvailableOn(date, '00:00', '23:59')) {
+    return [];
+  }
+
+  const dayOfWeek = date.toLowerCase();
+  const daySchedule = this.staffInfo.schedule[dayOfWeek];
+  const slots = [];
+
+  const workStart = daySchedule.start;
+  const workEnd = daySchedule.end;
+
+  // Parse working hours
+  const [startHour, startMinute] = workStart.split(':').map(Number);
+  const [endHour, endMinute] = workEnd.split(':').map(Number);
+
+  let currentTime = new Date(date);
+  currentTime.setHours(startHour, startMinute, 0, 0);
+
+  const endTime = new Date(date);
+  endTime.setHours(endHour, endMinute, 0, 0);
+
+  // Generate slots
+  while (currentTime < endTime) {
+    const slotEnd = new Date(currentTime.getTime() + serviceDuration * 60000);
+
+    if (slotEnd <= endTime) {
+      // Check if slot doesn't overlap with breaks
+      let overlapsBreak = false;
+      if (daySchedule.breaks) {
+        for (const breakPeriod of daySchedule.breaks) {
+          const breakStart = new Date(date);
+          const [bHour, bMinute] = breakPeriod.start.split(':').map(Number);
+          breakStart.setHours(bHour, bMinute, 0, 0);
+
+          const breakEnd = new Date(date);
+          const [beHour, beMinute] = breakPeriod.end.split(':').map(Number);
+          breakEnd.setHours(beHour, beMinute, 0, 0);
+
+          if (currentTime < breakEnd && slotEnd > breakStart) {
+            overlapsBreak = true;
+            break;
+          }
+        }
+      }
+
+      if (!overlapsBreak) {
+        slots.push({
+          startTime: currentTime.toTimeString().substring(0, 5),
+          endTime: slotEnd.toTimeString().substring(0, 5),
+          available: true
+        });
+      }
+    }
+
+    // Move to next slot (30-minute intervals)
+    currentTime = new Date(currentTime.getTime() + 30 * 60000);
+  }
+
+  return slots;
+};
+
+// Instance method to request time off
+userSchema.methods.requestTimeOff = function(startDate, endDate, reason) {
+  if (!this.staffInfo || !this.staffInfo.schedulingPreferences) {
+    throw new Error('Staff scheduling preferences not configured');
+  }
+
+  this.staffInfo.schedulingPreferences.timeOffRequests.push({
+    startDate,
+    endDate,
+    reason,
+    status: 'pending'
+  });
+
+  return this.save();
+};
+
+// Static method to get staff available on a specific date
+userSchema.statics.getAvailableStaff = function(date, startTime, endTime) {
+  return this.find({
+    role: { $in: ['staff', 'technician', 'stylist'] },
+    'staffInfo.isActive': true
+  }).then(staff => {
+    return staff.filter(member => member.isAvailableOn(date, startTime, endTime));
+  });
 };
 
 // Virtual for full name

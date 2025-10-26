@@ -48,16 +48,25 @@ const serviceTypeSchema = new mongoose.Schema({
     },
     type: {
       type: String,
-      enum: ['select', 'multi-select', 'text', 'number', 'color'],
+      enum: ['select', 'multi-select', 'text', 'number', 'color', 'boolean'],
       required: true
     },
     options: [{
       label: String,
       value: String,
-      additionalCost: { type: Number, default: 0 }
+      additionalCost: { type: Number, default: 0 },
+      additionalTime: { type: Number, default: 0 }, // Extra time required
+      image: String, // Preview image for the option
+      description: String
     }],
     required: { type: Boolean, default: false },
-    description: String
+    description: String,
+    defaultValue: String,
+    maxSelections: Number, // For multi-select
+    conditionalLogic: {
+      dependsOn: String, // Name of another customization
+      showWhen: String, // Value that triggers showing this customization
+    }
   }],
   staffSpecialties: [{
     type: String,
@@ -150,18 +159,130 @@ serviceTypeSchema.virtual('priceRange').get(function() {
 // Method to calculate final price with customizations
 serviceTypeSchema.methods.calculatePrice = function(selectedCustomizations = []) {
   let totalPrice = this.basePrice;
-  
+
   selectedCustomizations.forEach(selected => {
     const customization = this.customizations.find(c => c.name === selected.name);
     if (customization) {
-      const option = customization.options.find(o => o.value === selected.value);
-      if (option && option.additionalCost) {
-        totalPrice += option.additionalCost;
+      if (customization.type === 'multi-select') {
+        // Handle multiple selections
+        selected.values.forEach(value => {
+          const option = customization.options.find(o => o.value === value);
+          if (option && option.additionalCost) {
+            totalPrice += option.additionalCost;
+          }
+        });
+      } else {
+        // Handle single selection
+        const option = customization.options.find(o => o.value === selected.value);
+        if (option && option.additionalCost) {
+          totalPrice += option.additionalCost;
+        }
       }
     }
   });
-  
+
   return totalPrice;
+};
+
+// Method to calculate total duration with customizations
+serviceTypeSchema.methods.calculateTotalDuration = function(selectedCustomizations = []) {
+  let totalDuration = this.duration;
+
+  selectedCustomizations.forEach(selected => {
+    const customization = this.customizations.find(c => c.name === selected.name);
+    if (customization) {
+      if (customization.type === 'multi-select') {
+        selected.values.forEach(value => {
+          const option = customization.options.find(o => o.value === value);
+          if (option && option.additionalTime) {
+            totalDuration += option.additionalTime;
+          }
+        });
+      } else {
+        const option = customization.options.find(o => o.value === selected.value);
+        if (option && option.additionalTime) {
+          totalDuration += option.additionalTime;
+        }
+      }
+    }
+  });
+
+  return totalDuration;
+};
+
+// Method to validate customization selections
+serviceTypeSchema.methods.validateCustomizations = function(selectedCustomizations = []) {
+  const errors = [];
+  const selectedMap = new Map();
+
+  // Convert selections to map for easier validation
+  selectedCustomizations.forEach(selected => {
+    selectedMap.set(selected.name, selected);
+  });
+
+  this.customizations.forEach(customization => {
+    const selected = selectedMap.get(customization.name);
+
+    // Check required fields
+    if (customization.required && !selected) {
+      errors.push(`${customization.name} is required`);
+      return;
+    }
+
+    if (!selected) return;
+
+    // Validate based on type
+    switch (customization.type) {
+      case 'select':
+        if (!customization.options.some(opt => opt.value === selected.value)) {
+          errors.push(`Invalid option selected for ${customization.name}`);
+        }
+        break;
+
+      case 'multi-select':
+        if (!Array.isArray(selected.values)) {
+          errors.push(`${customization.name} must be an array of values`);
+        } else {
+          if (customization.maxSelections && selected.values.length > customization.maxSelections) {
+            errors.push(`Too many options selected for ${customization.name}`);
+          }
+          selected.values.forEach(value => {
+            if (!customization.options.some(opt => opt.value === value)) {
+              errors.push(`Invalid option selected for ${customization.name}`);
+            }
+          });
+        }
+        break;
+
+      case 'number':
+        const num = Number(selected.value);
+        if (isNaN(num)) {
+          errors.push(`${customization.name} must be a valid number`);
+        }
+        break;
+
+      case 'boolean':
+        if (typeof selected.value !== 'boolean') {
+          errors.push(`${customization.name} must be true or false`);
+        }
+        break;
+    }
+
+    // Check conditional logic
+    if (customization.conditionalLogic) {
+      const dependsOn = selectedMap.get(customization.conditionalLogic.dependsOn);
+      if (dependsOn && dependsOn.value !== customization.conditionalLogic.showWhen) {
+        // Remove this customization if condition not met
+        selectedMap.delete(customization.name);
+      }
+    }
+  });
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    validSelections: Array.from(selectedMap.values())
+  };
 };
 
 // Static method to get popular services
