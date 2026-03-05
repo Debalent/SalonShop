@@ -11,7 +11,7 @@
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 174 72% 40%;
+    --primary: 224 76% 49%;
     --primary-foreground: 0 0% 98%;
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
@@ -23,10 +23,10 @@
     --destructive-foreground: 210 20% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 174 72% 40%;
+    --ring: 224 76% 49%;
     --radius: 0.75rem;
-    --brand: 174 72% 40%;
-    --brand-glow: rgba(20, 184, 166, 0.35);
+    --brand: 224 76% 49%;
+    --brand-glow: rgba(26, 80, 224, 0.35);
   }
 
   .dark {
@@ -36,7 +36,7 @@
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-    --primary: 174 72% 40%;
+    --primary: 224 76% 49%;
     --primary-foreground: 0 0% 98%;
     --secondary: 215 27.9% 16.9%;
     --secondary-foreground: 210 20% 98%;
@@ -48,8 +48,8 @@
     --destructive-foreground: 210 20% 98%;
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
-    --ring: 174 72% 40%;
-    --brand-glow: rgba(20, 184, 166, 0.2);
+    --ring: 224 76% 49%;
+    --brand-glow: rgba(26, 80, 224, 0.2);
   }
 }
 
@@ -74,8 +74,8 @@
   }
 
   ::selection {
-    background-color: rgba(20, 184, 166, 0.2);
-    color: #0f766e;
+    background-color: rgba(26, 80, 224, 0.2);
+    color: #1a50e0;
   }
 
   ::-webkit-scrollbar {

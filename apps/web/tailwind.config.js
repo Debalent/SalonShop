@@ -43,19 +43,19 @@ module.exports = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
-        // Brand palette
+        // Brand palette — navy / royal blue (matches logo)
         brand: {
-          50:  '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-          950: '#042f2e',
+          50:  '#e8eeff',
+          100: '#d0dcfd',
+          200: '#a8bffa',
+          300: '#7298f5',
+          400: '#4472ee',
+          500: '#1a50e0',
+          600: '#1240c2',
+          700: '#0c2e9a',
+          800: '#081e6e',
+          900: '#041040',
+          950: '#02082a',
         },
         coral: {
           400: '#fb7185',
@@ -63,13 +63,13 @@ module.exports = {
           600: '#e11d48',
         },
         surface: {
-          DEFAULT: '#0f0f11',
+          DEFAULT: '#04091e',
           50:  '#fafafa',
           100: '#f5f5f5',
           200: '#e5e5e5',
-          800: '#1a1a1f',
-          900: '#0f0f11',
-          950: '#07070a',
+          800: '#0a1232',
+          900: '#04091e',
+          950: '#020510',
         },
       },
       fontFamily: {
@@ -82,7 +82,7 @@ module.exports = {
         '4xl': '2rem',
       },
       boxShadow: {
-        'glow-teal': '0 0 40px -10px rgba(20, 184, 166, 0.45)',
+        'glow-teal': '0 0 40px -10px rgba(26, 80, 224, 0.45)',
         'glow-coral': '0 0 40px -10px rgba(244, 63, 94, 0.45)',
         'card': '0 4px 24px -4px rgba(0,0,0,0.12)',
         'card-hover': '0 12px 40px -8px rgba(0,0,0,0.20)',
@@ -90,8 +90,8 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-brand': 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)',
-        'gradient-hero': 'linear-gradient(135deg, #0f0f11 0%, #0d2d29 50%, #0f0f11 100%)',
+        'gradient-brand': 'linear-gradient(135deg, #1a50e0 0%, #0c2e9a 100%)',
+        'gradient-hero': 'linear-gradient(135deg, #04091e 0%, #0a1a50 50%, #04091e 100%)',
         'gradient-card': 'linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
       },
       animation: {
@@ -115,8 +115,8 @@ module.exports = {
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
         pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 20px -5px rgba(20,184,166,0.4)' },
-          '50%': { boxShadow: '0 0 40px -5px rgba(20,184,166,0.7)' },
+          '0%, 100%': { boxShadow: '0 0 20px -5px rgba(26,80,224,0.4)' },
+          '50%': { boxShadow: '0 0 40px -5px rgba(26,80,224,0.7)' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
