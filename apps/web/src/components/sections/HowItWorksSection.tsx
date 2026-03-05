@@ -34,7 +34,7 @@ const steps = [
 
 export function HowItWorksSection() {
   return (
-    <section className="section-spacing bg-surface-950 relative overflow-hidden">
+    <section id="how-it-works" className="section-spacing bg-surface-950 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-500/5 rounded-full blur-[100px]" />
       </div>

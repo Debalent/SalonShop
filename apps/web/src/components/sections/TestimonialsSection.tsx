@@ -61,7 +61,7 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="section-spacing bg-surface-900">
+    <section id="testimonials" className="section-spacing bg-surface-900">
       <div className="page-container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
