@@ -5,11 +5,12 @@ import Logo from '@/components/ui/Logo'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, CalendarDays, CreditCard, Users, BarChart3,
-  Settings, Bell, Menu, X, LogOut, ChevronRight, Scissors, Star, QrCode
+  Settings, Bell, Menu, X, LogOut, ChevronRight, Scissors, Star, QrCode, ShieldCheck
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const providerNav = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const providerNav: { icon: any; label: string; href: string; providerOnly?: boolean; adminOnly?: boolean }[] = [
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
   { icon: CalendarDays, label: 'Appointments', href: '/dashboard/appointments' },
   { icon: CreditCard, label: 'Payments', href: '/dashboard/payments' },
@@ -17,8 +18,9 @@ const providerNav = [
   { icon: BarChart3, label: 'Analytics', href: '/dashboard/analytics' },
   { icon: Scissors, label: 'Services', href: '/dashboard/services' },
   { icon: Star,    label: 'Reviews',      href: '/dashboard/reviews' },
-  { icon: QrCode,  label: 'Booking Link', href: '/dashboard/booking-link', providerOnly: true },
-  { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
+  { icon: QrCode,      label: 'Booking Link', href: '/dashboard/booking-link', providerOnly: true },
+  { icon: Settings,     label: 'Settings',     href: '/dashboard/settings' },
+  { icon: ShieldCheck,  label: 'Admin',        href: '/dashboard/admin', adminOnly: true },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -45,7 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Nav */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {providerNav.map(({ icon: Icon, label, href, providerOnly }) => {
+          {providerNav.map(({ icon: Icon, label, href, providerOnly, adminOnly }) => {
             const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
             return (
               <Link
@@ -54,17 +56,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
                   'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group',
-                  isActive
-                    ? 'bg-brand-500/15 text-brand-400 border border-brand-500/20'
-                    : 'text-white/55 hover:text-white hover:bg-white/5'
+                  adminOnly
+                    ? isActive
+                      ? 'bg-red-500/12 text-red-400 border border-red-500/20'
+                      : 'text-white/40 hover:text-red-300 hover:bg-red-500/5'
+                    : isActive
+                      ? 'bg-brand-500/15 text-brand-400 border border-brand-500/20'
+                      : 'text-white/55 hover:text-white hover:bg-white/5'
                 )}
               >
-                <Icon size={18} className={cn(isActive ? 'text-brand-400' : 'text-white/40 group-hover:text-white/70')} />
+                <Icon size={18} className={cn(
+                  adminOnly
+                    ? isActive ? 'text-red-400' : 'text-white/30 group-hover:text-red-400'
+                    : isActive ? 'text-brand-400' : 'text-white/40 group-hover:text-white/70'
+                )} />
                 {label}
                 <span className="ml-auto flex items-center gap-1.5">
                   {providerOnly && !isActive && (
                     <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 font-bold leading-none">
                       PRO
+                    </span>
+                  )}
+                  {adminOnly && !isActive && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 font-bold leading-none">
+                      ADMIN
                     </span>
                   )}
                   {isActive && <ChevronRight size={14} />}
