@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import Logo from '@/components/ui/Logo'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, CalendarDays, CreditCard, Users, BarChart3,
@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="p-6 border-b border-white/[0.06]">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="SalonShop" width={36} height={36} className="rounded-lg ring-1 ring-white/10 object-contain" />
+            <Logo size={36} className="ring-1 ring-white/10" />
             <span className="font-display font-bold text-lg text-white">
               Salon<span className="gradient-text">Shop</span>
             </span>

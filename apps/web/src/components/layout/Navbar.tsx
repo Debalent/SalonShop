@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import Logo from '@/components/ui/Logo'
 import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Sun, Moon, ChevronDown, Bell, User, LogOut, Settings, LayoutDashboard } from 'lucide-react'
@@ -40,7 +40,7 @@ export function Navbar() {
         <nav className="flex items-center justify-between h-16 md:h-18">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Image src="/logo.png" alt="SalonShop" width={36} height={36} className="rounded-lg ring-1 ring-white/10 group-hover:ring-brand-500/50 transition-all duration-200 object-contain" />
+            <Logo size={36} className="ring-1 ring-white/10 group-hover:ring-brand-500/50 transition-all duration-200" />
             <span className="font-display font-bold text-xl text-white tracking-tight">
               Salon<span className="gradient-text">Shop</span>
             </span>

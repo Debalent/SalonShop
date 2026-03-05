@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import Logo from '@/components/ui/Logo'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -46,7 +46,7 @@ export default function LoginPage() {
       {/* Logo */}
       <div className="text-center mb-8">
         <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
-          <Image src="/logo.png" alt="SalonShop" width={40} height={40} className="rounded-xl ring-1 ring-white/10 object-contain" />
+          <Logo size={40} className="ring-1 ring-white/10" />
           <span className="font-display font-bold text-2xl text-white">
             Salon<span className="gradient-text">Shop</span>
           </span>

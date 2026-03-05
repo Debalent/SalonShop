@@ -52,6 +52,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder"
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_placeholder"
           NEXT_PUBLIC_APP_URL: "https://placeholder.github.io/SalonShop"
+          NEXT_PUBLIC_BASE_PATH: "/SalonShop"
         run: npm run build
 
       - name: Upload Pages artifact
