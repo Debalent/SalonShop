@@ -63,7 +63,7 @@ export default function RegisterPage() {
       <div className="text-center mb-8">
         <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
           <div className="relative w-9 h-9 rounded-xl overflow-hidden ring-1 ring-white/10">
-            <Image src="/logo.png" alt="SalonShop" fill className="object-cover" />
+            <Image src="/logo.png" alt="SalonShop" fill className="object-contain" />
           </div>
           <span className="font-display font-bold text-2xl text-white">
             Salon<span className="gradient-text">Shop</span>

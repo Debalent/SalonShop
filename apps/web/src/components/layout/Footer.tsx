@@ -38,7 +38,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
               <div className="relative w-8 h-8 rounded-lg overflow-hidden ring-1 ring-white/10">
-                <Image src="/logo.png" alt="SalonShop" fill className="object-cover" />
+                <Image src="/logo.png" alt="SalonShop" fill className="object-contain" />
               </div>
               <span className="font-display font-bold text-xl text-white">
                 Salon<span className="gradient-text">Shop</span>

@@ -41,7 +41,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="relative w-8 h-8 rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:ring-brand-500/50 transition-all duration-200">
-              <Image src="/logo.png" alt="SalonShop" fill className="object-cover" />
+              <Image src="/logo.png" alt="SalonShop" fill className="object-contain" />
             </div>
             <span className="font-display font-bold text-xl text-white tracking-tight">
               Salon<span className="gradient-text">Shop</span>
