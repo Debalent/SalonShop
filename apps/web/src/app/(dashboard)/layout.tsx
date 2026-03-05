@@ -5,7 +5,7 @@ import Logo from '@/components/ui/Logo'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, CalendarDays, CreditCard, Users, BarChart3,
-  Settings, Bell, Menu, X, LogOut, ChevronRight, Scissors, Star
+  Settings, Bell, Menu, X, LogOut, ChevronRight, Scissors, Star, QrCode
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -16,7 +16,8 @@ const providerNav = [
   { icon: Users, label: 'Clients', href: '/dashboard/clients' },
   { icon: BarChart3, label: 'Analytics', href: '/dashboard/analytics' },
   { icon: Scissors, label: 'Services', href: '/dashboard/services' },
-  { icon: Star, label: 'Reviews', href: '/dashboard/reviews' },
+  { icon: Star,    label: 'Reviews',      href: '/dashboard/reviews' },
+  { icon: QrCode,  label: 'Booking Link', href: '/dashboard/booking-link', providerOnly: true },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
 ]
 
@@ -44,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Nav */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {providerNav.map(({ icon: Icon, label, href }) => {
+          {providerNav.map(({ icon: Icon, label, href, providerOnly }) => {
             const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
             return (
               <Link
@@ -60,7 +61,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               >
                 <Icon size={18} className={cn(isActive ? 'text-brand-400' : 'text-white/40 group-hover:text-white/70')} />
                 {label}
-                {isActive && <ChevronRight size={14} className="ml-auto" />}
+                <span className="ml-auto flex items-center gap-1.5">
+                  {providerOnly && !isActive && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 font-bold leading-none">
+                      PRO
+                    </span>
+                  )}
+                  {isActive && <ChevronRight size={14} />}
+                </span>
               </Link>
             )
           })}
