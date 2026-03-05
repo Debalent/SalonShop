@@ -35,9 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Logo */}
         <div className="p-6 border-b border-white/[0.06]">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="relative w-8 h-8 rounded-lg overflow-hidden ring-1 ring-white/10">
-              <Image src="/logo.png" alt="SalonShop" fill className="object-contain" />
-            </div>
+            <Image src="/logo.png" alt="SalonShop" width={36} height={36} className="rounded-lg ring-1 ring-white/10 object-contain" />
             <span className="font-display font-bold text-lg text-white">
               Salon<span className="gradient-text">Shop</span>
             </span>

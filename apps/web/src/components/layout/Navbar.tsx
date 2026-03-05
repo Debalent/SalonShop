@@ -40,9 +40,7 @@ export function Navbar() {
         <nav className="flex items-center justify-between h-16 md:h-18">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-8 h-8 rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:ring-brand-500/50 transition-all duration-200">
-              <Image src="/logo.png" alt="SalonShop" fill className="object-contain" />
-            </div>
+            <Image src="/logo.png" alt="SalonShop" width={36} height={36} className="rounded-lg ring-1 ring-white/10 group-hover:ring-brand-500/50 transition-all duration-200 object-contain" />
             <span className="font-display font-bold text-xl text-white tracking-tight">
               Salon<span className="gradient-text">Shop</span>
             </span>
