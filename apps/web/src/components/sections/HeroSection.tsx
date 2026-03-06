@@ -121,14 +121,9 @@ export function HeroSection() {
               Open beta · 2,400+ pros live
               <ArrowRight size={12}/>
             </motion.div>
-            <h1 className="font-display font-black text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-[1.04] tracking-tight mb-6">
+            <h1 className="font-display font-black text-5xl md:text-6xl lg:text-[4.5rem] text-white leading-[1.12] tracking-tight mb-6">
               Your beauty{' '}
-              <span className="relative inline-block">
-                <span className="gradient-text">business</span>
-                <svg className="absolute -bottom-1 left-0 w-full h-2" viewBox="0 0 200 8" preserveAspectRatio="none" aria-hidden="true">
-                  <path d="M0 6 Q50 0 100 4 Q150 8 200 2" stroke="#1a50e0" strokeWidth="2.5" strokeOpacity="0.5" fill="none"/>
-                </svg>
-              </span>
+              <span className="gradient-text">business</span>
               <br/>on autopilot.
             </h1>
             <p className="text-white/50 text-xl md:text-2xl leading-relaxed mb-9 max-w-xl mx-auto lg:mx-0">
