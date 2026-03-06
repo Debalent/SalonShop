@@ -4,15 +4,17 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   X, ChevronRight, ChevronLeft, Calendar, CreditCard,
   BarChart3, Bell, CheckCircle2, Clock, Star, Zap, Shield,
-  ArrowRight, Smartphone,
+  ArrowRight, Smartphone, Heart,
 } from 'lucide-react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrency, providerPayoutAmount } from '@/lib/utils'
+import { TipSelector } from '@/components/ui/TipSelector'
 
 /* ─── Step definitions ───────────────────────────────────────────────── */
 const steps = [
   { id: 'booking',    label: 'Smart Booking',  icon: Calendar   },
   { id: 'payment',   label: 'Secure Payment', icon: CreditCard  },
+  { id: 'tipping',   label: 'Tip Stylist',    icon: Heart       },
   { id: 'dashboard', label: 'Dashboard',      icon: BarChart3   },
   { id: 'automated', label: 'Automation',     icon: Bell        },
 ]
@@ -241,6 +243,100 @@ function PaymentScreen() {
   )
 }
 
+/* ─── Screen: Tipping ───────────────────────────────────────────────── */
+const SERVICE_TOTAL_CENTS = 12000   // $120 Full Color + Cut
+
+function TipScreen() {
+  const [tipCents, setTipCents] = useState(1800)  // default 15%
+  const [confirmed, setConfirmed] = useState(false)
+  const stylistNet = providerPayoutAmount(SERVICE_TOTAL_CENTS, tipCents)
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center gap-3 pb-4 border-b border-white/[0.07]">
+        <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/25 flex items-center justify-center">
+          <Heart size={16} className="text-rose-400" />
+        </div>
+        <div>
+          <h3 className="text-white font-semibold text-sm">Tip Your Stylist</h3>
+          <p className="text-white/40 text-xs">100% goes directly to Destiny — no platform cut</p>
+        </div>
+      </div>
+
+      {/* Appointment recap */}
+      <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+        <div>
+          <p className="text-white text-sm font-semibold">Full Color + Cut</p>
+          <p className="text-white/35 text-xs">with Destiny Williams · Wed Mar 5</p>
+        </div>
+        <span className="text-white font-bold">{formatCurrency(SERVICE_TOTAL_CENTS)}</span>
+      </div>
+
+      {/* Interactive tip selector */}
+      <TipSelector
+        serviceTotal={SERVICE_TOTAL_CENTS}
+        onTipChange={cents => { setTipCents(cents); setConfirmed(false) }}
+      />
+
+      {/* Stylist take-home transparency */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tipCents}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center justify-between px-4 py-3 rounded-xl bg-green-500/8 border border-green-500/15"
+        >
+          <div className="flex items-center gap-2">
+            <Heart size={13} className="text-green-400" />
+            <div>
+              <p className="text-green-300 text-xs font-semibold">Destiny receives</p>
+              <p className="text-white/35 text-[10px]">Service minus 2% fee{tipCents > 0 ? ` + ${formatCurrency(tipCents)} tip` : ''}</p>
+            </div>
+          </div>
+          <span className="font-display font-black text-xl text-white">{formatCurrency(stylistNet)}</span>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* CTA */}
+      <AnimatePresence>
+        {!confirmed ? (
+          <motion.button
+            key="pay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setConfirmed(true)}
+            className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-white font-bold text-sm transition-all flex items-center justify-center gap-2"
+          >
+            <Zap size={14} />
+            {tipCents > 0
+              ? `Pay balance + ${formatCurrency(tipCents)} tip — ${formatCurrency(8000 + tipCents)}`
+              : 'Pay $80.00 balance (no tip)'}
+          </motion.button>
+        ) : (
+          <motion.div
+            key="done"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="space-y-2"
+          >
+            <div className="w-full py-3 rounded-xl bg-green-500/15 border border-green-500/30 text-green-400 font-bold text-sm flex items-center justify-center gap-2">
+              <CheckCircle2 size={15} />
+              {tipCents > 0 ? `Tip sent! Destiny gets ${formatCurrency(stylistNet)} total 💚` : 'Payment complete!'}
+            </div>
+            {tipCents > 0 && (
+              <p className="text-center text-white/30 text-xs">
+                Your {formatCurrency(tipCents)} tip was added to Destiny's next payout
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 /* ─── Screen: Dashboard ──────────────────────────────────────────────── */
 function DashboardScreen() {
   const kpis = [
@@ -415,7 +511,7 @@ function AutomationScreen() {
 }
 
 /* ─── Main Modal ─────────────────────────────────────────────────────── */
-const screens = [BookingScreen, PaymentScreen, DashboardScreen, AutomationScreen]
+const screens = [BookingScreen, PaymentScreen, TipScreen, DashboardScreen, AutomationScreen]
 
 interface DemoModalProps {
   open: boolean
