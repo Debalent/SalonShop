@@ -1,0 +1,483 @@
+// SalonShop — Production Prisma Schema
+// PostgreSQL + Stripe Connect marketplace
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  CLIENT
+  WORKER
+  SHOP_OWNER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  UNPAID
+  DEPOSIT_PAID
+  PAID
+  REFUNDED
+  PARTIALLY_REFUNDED
+  DISPUTED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMED
+  BOOKING_REMINDER
+  BOOKING_CANCELLED
+  PAYMENT_RECEIPT
+  REVIEW_RECEIVED
+  REBOOK_NUDGE
+  TIP_RECEIVED
+  PAYOUT_SENT
+  SYSTEM
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+// ─── Core User ────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  role          UserRole  @default(CLIENT)
+  emailVerified DateTime?
+  phone         String?
+  avatarUrl     String?
+  timezone      String    @default("America/New_York")
+  locale        String    @default("en")
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  profile           Profile?
+  workerProfile     WorkerProfile?
+  shopMembership    ShopWorker[]
+  ownedShop         Shop?
+
+  clientBookings    Booking[]         @relation("ClientBookings")
+  workerBookings    Booking[]         @relation("WorkerBookings")
+  clientPayments    Payment[]         @relation("ClientPayments")
+  reviewsGiven      Review[]          @relation("ReviewsGiven")
+  reviewsReceived   Review[]          @relation("ReviewsReceived")
+  notifications     Notification[]
+  loyaltyAccount    LoyaltyAccount?
+  referrals         Referral[]        @relation("ReferralSource")
+  referredBy        Referral?         @relation("ReferralTarget")
+  savedWorkers      SavedWorker[]
+  clientPaymentMethods SavedPaymentMethod[]
+  waitlistEntries   WaitlistEntry[]
+  sessions          Session[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  token        String   @unique
+  expiresAt    DateTime
+  userAgent    String?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ─── Profile ──────────────────────────────────────────────────────────────────
+
+model Profile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  bio             String?
+  location        String?
+  city            String?
+  state           String?
+  zipCode         String?
+  latitude        Float?
+  longitude       Float?
+  contactPhone    String?
+  website         String?
+  instagram       String?
+  tiktok          String?
+  portfolioImages String[] // Array of storage URLs
+  coverImageUrl   String?
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Worker Profile ───────────────────────────────────────────────────────────
+
+model WorkerProfile {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  slug                  String   @unique
+  displayName           String
+  profession            String   // "Hair Stylist", "Barber", etc.
+  categories            String[] // ["Hair", "Color", "Nails"]
+  yearsExperience       Int?
+  specialties           String[]
+  isAcceptingClients    Boolean  @default(true)
+  depositPercent        Int      @default(30)   // 0-100
+  cancellationHours     Int      @default(24)   // hours notice for free cancel
+  instantBook           Boolean  @default(false)
+  stripeAccountId       String?  @unique         // Stripe Connect account
+  stripeAccountStatus   String?  // "active" | "pending" | "restricted"
+  averageRating         Float    @default(0)
+  totalReviews          Int      @default(0)
+  totalBookings         Int      @default(0)
+  isVerified            Boolean  @default(false)
+  isFeatured            Boolean  @default(false)
+  subscriptionTier      String   @default("free")  // "free" | "pro" | "elite"
+  onboardingCompleted   Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  services     Service[]
+  availability Availability[]
+  timeBlocks   TimeBlock[]
+
+  @@index([slug])
+  @@index([profession])
+  @@index([averageRating])
+  @@index([isAcceptingClients])
+}
+
+// ─── Services ─────────────────────────────────────────────────────────────────
+
+model Service {
+  id              String   @id @default(cuid())
+  workerId        String
+  workerProfile   WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?
+  category        String
+  price           Int      // cents
+  durationMinutes Int
+  depositPercent  Int      @default(0)
+  isActive        Boolean  @default(true)
+  isAddon         Boolean  @default(false)
+  sortOrder       Int      @default(0)
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  bookings        Booking[]
+
+  @@index([workerId])
+  @@index([category])
+  @@index([isActive])
+}
+
+// ─── Availability ─────────────────────────────────────────────────────────────
+
+model Availability {
+  id            String        @id @default(cuid())
+  workerId      String
+  workerProfile WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  dayOfWeek     DayOfWeek
+  startTime     String        // "09:00"
+  endTime       String        // "18:00"
+  isActive      Boolean       @default(true)
+
+  @@unique([workerId, dayOfWeek])
+  @@index([workerId])
+}
+
+// ─── Time Blocks (blocked-out time) ──────────────────────────────────────────
+
+model TimeBlock {
+  id            String        @id @default(cuid())
+  workerId      String
+  workerProfile WorkerProfile @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  startAt       DateTime
+  endAt         DateTime
+  reason        String?
+  createdAt     DateTime      @default(now())
+
+  @@index([workerId, startAt])
+}
+
+// ─── Bookings ─────────────────────────────────────────────────────────────────
+
+model Booking {
+  id              String        @id @default(cuid())
+  clientId        String
+  workerId        String
+  serviceId       String
+  shopId          String?
+  bookingDate     DateTime
+  startTime       String        // "14:00"
+  endTime         String        // "15:30"
+  status          BookingStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  totalAmount     Int           // cents
+  depositAmount   Int           @default(0) // cents
+  tipAmount       Int           @default(0) // cents
+  platformFee     Int           @default(0) // cents
+  workerPayout    Int           @default(0) // cents
+  clientNotes     String?
+  internalNotes   String?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  completedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  client    User     @relation("ClientBookings", fields: [clientId], references: [id])
+  worker    User     @relation("WorkerBookings", fields: [workerId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+  shop      Shop?    @relation(fields: [shopId], references: [id])
+  payment   Payment?
+  review    Review?
+
+  @@index([clientId])
+  @@index([workerId, bookingDate])
+  @@index([status])
+  @@index([bookingDate])
+}
+
+// ─── Payments ─────────────────────────────────────────────────────────────────
+
+model Payment {
+  id                     String        @id @default(cuid())
+  bookingId              String        @unique
+  booking                Booking       @relation(fields: [bookingId], references: [id])
+  clientId               String
+  client                 User          @relation("ClientPayments", fields: [clientId], references: [id])
+  stripePaymentIntentId  String?       @unique
+  stripeChargeId         String?
+  stripeTransferId       String?
+  amount                 Int           // cents total charged
+  depositAmount          Int           @default(0)
+  tipAmount              Int           @default(0)
+  platformFee            Int           @default(0)
+  workerPayout           Int           @default(0)
+  currency               String        @default("usd")
+  status                 PaymentStatus @default(UNPAID)
+  refundedAmount         Int           @default(0)
+  receiptUrl             String?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@index([clientId])
+  @@index([status])
+}
+
+// ─── Reviews ──────────────────────────────────────────────────────────────────
+
+model Review {
+  id              String       @id @default(cuid())
+  bookingId       String       @unique
+  booking         Booking      @relation(fields: [bookingId], references: [id])
+  clientId        String
+  workerId        String
+  client          User         @relation("ReviewsGiven", fields: [clientId], references: [id])
+  worker          User         @relation("ReviewsReceived", fields: [workerId], references: [id])
+  rating          Int          // 1-5
+  body            String?
+  wouldBookAgain  Boolean      @default(true)
+  status          ReviewStatus @default(PENDING)
+  providerReply   String?
+  repliedAt       DateTime?
+  flaggedReason   String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([workerId, status])
+  @@index([clientId])
+  @@index([rating])
+}
+
+// ─── Shops ────────────────────────────────────────────────────────────────────
+
+model Shop {
+  id             String   @id @default(cuid())
+  ownerId        String   @unique
+  owner          User     @relation(fields: [ownerId], references: [id])
+  name           String
+  slug           String   @unique
+  description    String?
+  location       String?
+  city           String?
+  state          String?
+  phone          String?
+  website        String?
+  instagram      String?
+  logoUrl        String?
+  coverUrl       String?
+  platformFeePct Float    @default(0.10) // 10% default shop model
+  workerRevShare Float    @default(0.20) // 20% to worker
+  shopRevShare   Float    @default(0.70) // 70% to shop
+  isActive       Boolean  @default(true)
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  workers  ShopWorker[]
+  bookings Booking[]
+
+  @@index([slug])
+}
+
+model ShopWorker {
+  id        String   @id @default(cuid())
+  shopId    String
+  workerId  String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  worker    User     @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  role      String   @default("stylist")
+  isActive  Boolean  @default(true)
+  joinedAt  DateTime @default(now())
+
+  @@unique([shopId, workerId])
+  @@index([shopId])
+  @@index([workerId])
+}
+
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String
+  data      Json?            // arbitrary metadata
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+// ─── Saved Workers (favorites) ────────────────────────────────────────────────
+
+model SavedWorker {
+  id        String   @id @default(cuid())
+  clientId  String
+  workerId  String
+  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([clientId, workerId])
+  @@index([clientId])
+}
+
+// ─── Saved Payment Methods ────────────────────────────────────────────────────
+
+model SavedPaymentMethod {
+  id                 String   @id @default(cuid())
+  clientId           String
+  client             User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  stripeCustomerId   String
+  stripePaymentMethodId String @unique
+  brand              String   // "visa" | "mastercard" | "amex"
+  last4              String
+  expMonth           Int
+  expYear            Int
+  isDefault          Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  @@index([clientId])
+}
+
+// ─── Loyalty Program ──────────────────────────────────────────────────────────
+
+model LoyaltyAccount {
+  id              String          @id @default(cuid())
+  clientId        String          @unique
+  client          User            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  totalPoints     Int             @default(0)
+  lifetimePoints  Int             @default(0)
+  tier            String          @default("bronze") // "bronze"|"silver"|"gold"|"platinum"
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  transactions    LoyaltyTransaction[]
+}
+
+model LoyaltyTransaction {
+  id         String         @id @default(cuid())
+  accountId  String
+  account    LoyaltyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  points     Int            // positive = earn, negative = redeem
+  reason     String
+  bookingId  String?
+  createdAt  DateTime       @default(now())
+
+  @@index([accountId])
+}
+
+// ─── Referrals ────────────────────────────────────────────────────────────────
+
+model Referral {
+  id           String    @id @default(cuid())
+  sourceUserId String
+  targetUserId String    @unique
+  sourceUser   User      @relation("ReferralSource", fields: [sourceUserId], references: [id])
+  targetUser   User      @relation("ReferralTarget", fields: [targetUserId], references: [id])
+  code         String    @unique
+  creditAmount Int       @default(1000)  // cents credit given
+  isRedeemed   Boolean   @default(false)
+  redeemedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([sourceUserId])
+  @@index([code])
+}
+
+// ─── Waitlist ─────────────────────────────────────────────────────────────────
+
+model WaitlistEntry {
+  id            String    @id @default(cuid())
+  clientId      String
+  workerId      String
+  serviceId     String
+  preferredDate DateTime?
+  flexibleDays  Int       @default(3)
+  notified      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  client        User      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, workerId, serviceId])
+  @@index([workerId])
+}

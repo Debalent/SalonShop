@@ -1,214 +1,167 @@
 'use client'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { Check, Zap, Building2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Check, Zap, ArrowRight, Sparkles, HelpCircle } from 'lucide-react'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-const plans = [
+const PLANS = [
   {
-    tier: 'free',
-    name: 'Starter',
-    icon: Sparkles,
-    price: { monthly: 0, yearly: 0 },
-    desc: 'Perfect for getting started.',
-    features: [
-      'Up to 5 services',
-      'Basic booking page',
-      '1 payment method',
-      'Email confirmations',
-      'Basic analytics',
-    ],
-    cta: 'Get started free',
-    href: '/register?plan=free',
+    name:  'Free',
+    desc:  'Everything you need to start taking bookings today.',
+    monthly: 0,
+    annual: 0,
+    fee: '5% platform fee',
+    cta: 'Start free',
+    href: '/onboarding',
     highlight: false,
-    badge: null,
-  },
-  {
-    tier: 'pro',
-    name: 'Pro',
-    icon: Zap,
-    price: { monthly: 29, yearly: 23 },
-    desc: 'For solo pros ready to grow.',
     features: [
-      'Unlimited services',
-      'Deposit & full pre-pay',
-      'All payment methods',
-      'SMS + email automation',
-      'Full analytics dashboard',
-      'Portfolio gallery',
-      'Loyalty & referrals',
-      'QR booking link',
-      'Custom booking URL',
-      'Priority support',
+      'Up to 30 bookings/mo',
+      'Custom booking page + QR code',
+      'Stripe payment processing',
+      'SMS + email confirmations',
+      'Basic analytics dashboard',
+      'Client reviews',
     ],
-    cta: 'Start Pro free trial',
-    href: '/register?plan=pro',
-    highlight: true,
-    badge: 'Most popular',
+    missing: ['Deposit-based bookings', 'Loyalty rewards', 'Team management', 'Priority support'],
   },
   {
-    tier: 'business',
-    name: 'Business',
-    icon: Building2,
-    price: { monthly: 79, yearly: 63 },
-    desc: 'For shops and teams.',
+    name: 'Pro',
+    badge: 'Most popular',
+    desc: 'For serious pros ready to scale their business.',
+    monthly: 2900,   // cents
+    annual: 2400,
+    fee: '2% platform fee',
+    cta: 'Start Pro free for 14 days',
+    href: '/onboarding?plan=pro',
+    highlight: true,
+    features: [
+      'Unlimited bookings',
+      'Deposit-based booking',
+      'Waitlist management',
+      'Full earnings analytics + export',
+      'Loyalty & referral system',
+      'Automated rebook reminders',
+      'Cancellation policy controls',
+      'Priority email + chat support',
+    ],
+    missing: ['Team management', 'White-labeling', 'Dedicated account manager'],
+  },
+  {
+    name: 'Elite',
+    desc: 'For shops, studios, and multi-worker operations.',
+    monthly: 7900,
+    annual: 6600,
+    fee: '1% platform fee',
+    cta: 'Book a demo',
+    href: 'mailto:balentinetechsolutions@gmail.com',
+    highlight: false,
     features: [
       'Everything in Pro',
-      'Up to 25 staff members',
-      'Team calendar & roles',
-      'Commission split tracking',
-      'Revenue by provider',
-      'Advanced reporting',
-      'Custom branding',
-      'Custom domain',
-      'API access',
-      'Dedicated onboarding',
+      'Multi-worker team management',
+      'Shop-level analytics dashboard',
+      'Custom revenue split rules',
+      'Worker onboarding tools',
+      'White-label booking page',
+      'Dedicated account manager',
+      'SLA + priority phone support',
     ],
-    cta: 'Start Business trial',
-    href: '/register?plan=business',
-    highlight: false,
-    badge: null,
+    missing: [],
   },
 ]
 
+function formatPrice(cents: number) {
+  if (cents === 0) return '$0'
+  return '$' + (cents / 100).toFixed(0)
+}
+
 export function PricingSection() {
-  const [yearly, setYearly] = useState(false)
+  const [annual, setAnnual] = useState(true)
 
   return (
-    <section id="pricing" className="section-spacing bg-surface-950">
+    <section id="pricing" className="section-spacing">
       <div className="page-container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-sm font-semibold mb-6">
-            Transparent pricing
-          </div>
-          <h2 className="font-display font-bold text-4xl md:text-5xl xl:text-6xl text-white mb-5 tracking-tight">
-            Simple pricing,{' '}
-            <span className="gradient-text">no surprises</span>
+        <motion.div className="text-center mb-12"
+          initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-80px'}}>
+          <p className="text-brand-400 font-bold text-sm uppercase tracking-widest mb-4">Simple pricing</p>
+          <h2 className="font-display font-black text-4xl md:text-5xl text-white tracking-tight mb-5">
+            Transparent. Fair. <span className="gradient-text">No surprises.</span>
           </h2>
-          <p className="text-white/50 text-lg max-w-xl mx-auto mb-8">
-            Start free. Upgrade when you&apos;re ready. Cancel anytime.
+          <p className="text-white/45 text-xl max-w-xl mx-auto mb-8">
+            Pay $0 to start. Upgrade when you need more. Cancel anytime.
           </p>
-
-          {/* Billing toggle */}
-          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/[0.05] border border-white/[0.08]">
-            <button
-              onClick={() => setYearly(false)}
-              className={cn(
-                'px-5 py-2 rounded-lg text-sm font-semibold transition-all',
-                !yearly ? 'bg-white/10 text-white shadow-sm' : 'text-white/45 hover:text-white/70'
-              )}
-            >
+          {/* Annual toggle */}
+          <div className="inline-flex items-center gap-3 p-1.5 rounded-full border border-white/[0.08] bg-white/[0.04]">
+            <button onClick={()=>setAnnual(false)} className={cn('px-4 py-1.5 rounded-full text-sm font-semibold transition-all',!annual?'bg-white/10 text-white':'text-white/40 hover:text-white/60')}>
               Monthly
             </button>
-            <button
-              onClick={() => setYearly(true)}
-              className={cn(
-                'px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2',
-                yearly ? 'bg-white/10 text-white shadow-sm' : 'text-white/45 hover:text-white/70'
-              )}
-            >
-              Yearly
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-400 font-bold border border-green-500/30">
-                −20%
-              </span>
+            <button onClick={()=>setAnnual(true)} className={cn('px-4 py-1.5 rounded-full text-sm font-semibold transition-all flex items-center gap-1.5',annual?'bg-brand-500/20 text-brand-300 border border-brand-500/30':'text-white/40 hover:text-white/60')}>
+              Annual <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">Save 17%</span>
             </button>
           </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto items-stretch">
-          {plans.map(({ tier, name, icon: Icon, price, desc, features, cta, href, highlight, badge }, i) => (
-            <motion.div
-              key={tier}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              className={cn(
-                'relative rounded-2xl p-7 flex flex-col transition-all duration-300',
+        <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          {PLANS.map(({ name, badge, desc, monthly, annual: ann, fee, cta, href, highlight, features, missing }, i) => (
+            <motion.div key={name}
+              initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-60px'}} transition={{duration:0.4,delay:i*0.1}}
+              className={cn('relative rounded-2xl border p-7 flex flex-col',
                 highlight
-                  ? 'bg-brand-500/12 border-2 border-brand-500/45 shadow-glow-teal'
-                  : 'bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.14] hover:-translate-y-0.5 hover:shadow-card',
-              )}
-            >
-              {/* Popular badge */}
+                  ? 'bg-brand-500/10 border-brand-500/30 shadow-glow-teal ring-1 ring-brand-500/20'
+                  : 'bg-white/[0.025] border-white/[0.08]'
+              )}>
               {badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1 rounded-full bg-brand-500 text-white text-xs font-bold shadow-glow-teal">
-                  <Zap size={11} />
-                  {badge}
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-brand-500 text-white text-xs font-bold shadow-glow-teal">
+                  <Sparkles size={10}/> {badge}
                 </div>
               )}
-
-              {/* Plan header */}
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className={cn(
-                      'w-7 h-7 rounded-lg flex items-center justify-center',
-                      highlight ? 'bg-brand-500/20 border border-brand-500/30' : 'bg-white/[0.07] border border-white/10'
-                    )}>
-                      <Icon size={14} className={highlight ? 'text-brand-300' : 'text-white/60'} />
-                    </div>
-                    <h3 className="font-display font-bold text-xl text-white">{name}</h3>
-                  </div>
-                  <p className="text-white/40 text-sm">{desc}</p>
-                </div>
+              <div className="mb-6">
+                <h3 className="font-display font-black text-2xl text-white mb-1">{name}</h3>
+                <p className="text-white/40 text-sm leading-relaxed">{desc}</p>
               </div>
-
-              {/* Price */}
-              <div className="mb-7">
+              <div className="mb-2">
                 <div className="flex items-end gap-1.5">
-                  <span className="font-display font-black text-5xl text-white leading-none">
-                    {price.monthly === 0 ? 'Free' : `$${yearly ? price.yearly : price.monthly}`}
+                  <span className="font-display font-black text-5xl text-white">
+                    {formatPrice(annual ? ann : monthly)}
                   </span>
-                  {price.monthly > 0 && (
-                    <span className="text-white/35 text-sm mb-1.5">/mo{yearly ? ' billed yearly' : ''}</span>
-                  )}
+                  {(monthly > 0) && <span className="text-white/35 text-sm mb-2">/mo · billed {annual ? 'annually' : 'monthly'}</span>}
                 </div>
-                {yearly && price.monthly > 0 && (
-                  <p className="text-green-400 text-xs font-semibold mt-1.5">
-                    Save ${(price.monthly - price.yearly) * 12}/year
-                  </p>
-                )}
+                <p className="text-white/30 text-xs mt-1 flex items-center gap-1"><Zap size={10}/> +{fee} per transaction</p>
               </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8 flex-1">
+              <Link href={href}
+                className={cn('w-full text-center py-3 rounded-xl font-bold text-sm transition-all my-6 flex items-center justify-center gap-2',
+                  highlight
+                    ? 'bg-brand-500 hover:bg-brand-400 text-white shadow-glow-teal hover:-translate-y-0.5'
+                    : 'bg-white/[0.07] hover:bg-white/[0.12] border border-white/[0.10] text-white'
+                )}>
+                {cta} {highlight && <ArrowRight size={14}/>}
+              </Link>
+              <ul className="space-y-2.5 flex-1">
                 {features.map(f => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-white/65">
-                    <Check
-                      size={15}
-                      className={cn('mt-0.5 flex-shrink-0', highlight ? 'text-brand-400' : 'text-white/40')}
-                    />
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-white/65">
+                    <Check size={14} className={cn('mt-0.5 flex-shrink-0', highlight ? 'text-brand-400' : 'text-emerald-400')}/>
                     {f}
                   </li>
                 ))}
-              </ul>
-
-              {/* CTA */}
-              <Link
-                href={href}
-                className={cn(
-                  'block text-center py-3 rounded-xl font-bold text-sm transition-all',
-                  highlight
-                    ? 'bg-brand-500 hover:bg-brand-400 text-white shadow-glow-teal hover:-translate-y-0.5'
-                    : 'bg-white/[0.07] hover:bg-white/[0.12] text-white border border-white/10 hover:border-white/20'
+                {missing.length > 0 && (
+                  <>
+                    <li className="border-t border-white/[0.05] my-2"/>
+                    {missing.map(f => (
+                      <li key={f} className="flex items-start gap-2.5 text-sm text-white/20 line-through">
+                        <HelpCircle size={14} className="mt-0.5 flex-shrink-0 text-white/15"/>
+                        {f}
+                      </li>
+                    ))}
+                  </>
                 )}
-              >
-                {cta}
-              </Link>
+              </ul>
             </motion.div>
           ))}
         </div>
 
         <p className="text-center text-white/25 text-sm mt-8">
-          All plans include a 14-day free trial · No credit card required to start
+          All plans include SSL, GDPR compliance, 99.9% uptime SLA, and human support.
+          Questions? <a href="mailto:balentinetechsolutions@gmail.com" className="text-brand-400 hover:text-brand-300 underline">Talk to us.</a>
         </p>
       </div>
     </section>

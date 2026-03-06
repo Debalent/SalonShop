@@ -1,112 +1,84 @@
 'use client'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { ArrowRight, Mail, Sparkles, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
-import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react'
-
-const perks = [
-  '14-day free trial',
-  'No credit card required',
-  'Setup in 10 minutes',
-  'Cancel anytime',
-]
 
 export function CtaSection() {
+  const [email,     setEmail]     = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email.includes('@')) return
+    setSubmitted(true)
+    setEmail('')
+  }
+
   return (
-    <section className="section-spacing bg-surface-900">
+    <section id="demo" className="section-spacing">
       <div className="page-container">
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65 }}
-          className="relative rounded-3xl overflow-hidden"
-        >
-          {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-800/60 via-brand-700/30 to-surface-800" />
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-20 -right-20 w-[500px] h-[500px] bg-brand-500/20 rounded-full blur-[100px]" />
-            <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-brand-600/15 rounded-full blur-[80px]" />
-            <div
-              className="absolute inset-0 opacity-[0.03]"
-              style={{
-                backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)',
-                backgroundSize: '32px 32px',
-              }}
-            />
-          </div>
-          <div className="absolute inset-0 rounded-3xl border border-brand-500/20" />
+          initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:'-80px'}} transition={{duration:0.55}}
+          className="relative rounded-3xl overflow-hidden border border-brand-500/20">
+          {/* BG gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-600/20 via-brand-500/10 to-purple-600/15 pointer-events-none"/>
+          <div className="absolute inset-0 opacity-[0.02]" style={{backgroundImage:'radial-gradient(white 1px, transparent 1px)',backgroundSize:'24px 24px'}}/>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"/>
 
-          <div className="relative z-10 px-8 py-16 md:px-16 md:py-24 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-500/15 border border-brand-500/25 text-brand-300 text-sm font-semibold mb-8"
-            >
-              <Sparkles size={14} />
-              Free 14-day trial — no credit card required
-            </motion.div>
+          <div className="relative px-8 py-16 md:px-16 md:py-20 text-center">
+            {/* Flair */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300 text-sm font-bold mb-7">
+              <Sparkles size={12}/> Limited beta slots remaining
+            </div>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="font-display font-black text-4xl md:text-6xl xl:text-7xl text-white mb-6 leading-tight tracking-tight"
-            >
-              Stop leaving money
-              <br />
-              <span className="gradient-text">on the table.</span>
-            </motion.h2>
+            <h2 className="font-display font-black text-4xl md:text-6xl text-white tracking-tight mb-6 leading-[1.05]">
+              Ready to run your<br/>
+              <span className="gradient-text">business smarter?</span>
+            </h2>
+            <p className="text-white/50 text-xl md:text-2xl leading-relaxed mb-10 max-w-2xl mx-auto">
+              Join 2,400+ beauty professionals who replaced their patchwork of apps with SalonShop.
+              <strong className="text-white font-semibold"> Free to start. No credit card.</strong>
+            </p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: 0.2 }}
-              className="text-white/55 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
-            >
-              Join 12,000+ beauty professionals who switched to SalonShop.
-              Setup takes 10 minutes. Results start immediately.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.25 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
-            >
-              <Link
-                href="/register"
-                className="group inline-flex items-center gap-2.5 px-10 py-4 bg-white text-brand-700 font-bold text-base rounded-xl transition-all duration-200 hover:bg-brand-50 hover:-translate-y-0.5 hover:shadow-xl w-full sm:w-auto justify-center"
-              >
-                Start your free trial
-                <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-              <Link
-                href="/#pricing"
-                className="inline-flex items-center gap-2 px-10 py-4 bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 hover:border-white/25 text-white font-semibold text-base rounded-xl transition-all duration-200 w-full sm:w-auto justify-center"
-              >
-                View pricing
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.35 }}
-              className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2"
-            >
-              {perks.map(p => (
-                <div key={p} className="flex items-center gap-2 text-white/45 text-sm">
-                  <CheckCircle2 size={14} className="text-brand-400" />
-                  {p}
+            {/* Email waitlist OR direct signup */}
+            {submitted ? (
+              <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}}
+                className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-lg font-semibold">
+                <CheckCircle size={22}/> You're on the list. We'll be in touch shortly!
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto mb-6">
+                <div className="relative flex-1">
+                  <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none"/>
+                  <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Your professional email"
+                    className="w-full pl-11 pr-4 py-4 text-base bg-white/[0.06] border border-white/[0.12] focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/25 rounded-xl text-white placeholder:text-white/25 outline-none transition-all"/>
                 </div>
+                <button type="submit" className="btn-primary text-base py-4 px-7 shadow-glow-teal whitespace-nowrap">
+                  Join waitlist <ArrowRight size={16}/>
+                </button>
+              </form>
+            )}
+
+            <div className="flex items-center justify-center gap-6 flex-wrap">
+              {[
+                'Free forever plan',
+                '2-min setup',
+                'Cancel anytime',
+                'No credit card',
+              ].map(item => (
+                <span key={item} className="flex items-center gap-1.5 text-white/35 text-sm">
+                  <CheckCircle size={13} className="text-brand-400/70"/> {item}
+                </span>
               ))}
-            </motion.div>
+            </div>
+
+            <div className="mt-10 pt-10 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-center gap-4">
+              <p className="text-white/30 text-sm">Already a pro?</p>
+              <Link href="/onboarding" className="text-brand-400 hover:text-brand-300 transition-colors font-semibold text-sm flex items-center gap-1.5">
+                Complete your onboarding <ArrowRight size={13}/>
+              </Link>
+            </div>
           </div>
         </motion.div>
       </div>
